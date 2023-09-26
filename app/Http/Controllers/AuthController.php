@@ -8,16 +8,6 @@ use stdClass;
 class AuthController extends Controller
 {
     /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['login']]);
-    }
-
-    /**
      * Get a JWT via given credentials.
      *
      * @return \Illuminate\Http\JsonResponse
@@ -40,10 +30,6 @@ class AuthController extends Controller
      */
     public function me()
     {
-        if (!auth()->user()) {
-            return response_json(401, 'failed', 'You are not logged in');
-        }
-
         return response_json(200, 'success', auth()->user());
     }
 
@@ -54,10 +40,6 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        if (!auth()->user()) {
-            return response_json(401, 'failed', 'You are not logged in');
-        }
-
         auth()->logout();
 
         return response_json(200, 'success', 'Successfully logged out');
@@ -70,10 +52,6 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        if (!auth()->user()) {
-            return response_json(401, 'failed', 'You are not logged in');
-        }
-        
         return response_json(200, 'success', $this->respondWithToken(auth()->refresh()));
     }
 

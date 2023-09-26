@@ -20,25 +20,65 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
         ]);
 
-        DB::table('products')->insert([
+        \App\Models\Product::factory()->create([
             'product_name' => 'PM-100',
-            'created_at' => now(),
-            'updated_at' => now()
         ]);
-        DB::table('products')->insert([
+        \App\Models\Product::factory()->create([
             'product_name' => 'PM-200',
-            'created_at' => now(),
-            'updated_at' => now()
         ]);
-        DB::table('products')->insert([
+        \App\Models\Product::factory()->create([
             'product_name' => 'PM-400',
-            'created_at' => now(),
-            'updated_at' => now()
         ]);
-        DB::table('products')->insert([
+        \App\Models\Product::factory()->create([
             'product_name' => 'PM-800',
-            'created_at' => now(),
-            'updated_at' => now()
+        ]);
+        \App\Models\ProductDetail::factory()->create([
+            'product_id' => '1',
+            'code' => 'RIKAM',
+            'item' => 'Biaya kamar per-hari, maksimal 90 hari',
+            'value' => 100000,
+            'product_per' => 'day',
+            'maximum_used' => 90,
+        ]);
+        \App\Models\ProductDetail::factory()->create([
+            'product_id' => '1',
+            'code' => 'RIKDU',
+            'item' => 'Kunjungan dokter umum per-hari',
+            'value' => 50000,
+            'product_per' => 'day',
+            'maximum_used' => null,
+        ]);
+        \App\Models\ProductDetail::factory()->create([
+            'product_id' => '1',
+            'code' => 'RIKDS',
+            'item' => 'Kunjungan dokter spesialis per-hari',
+            'value' => 80000,
+            'product_per' => 'day',
+            'maximum_used' => null,
+        ]);
+        \App\Models\ProductDetail::factory()->create([
+            'product_id' => '2',
+            'code' => 'RIKAM',
+            'item' => 'Biaya kamar per-hari, maksimal 90 hari',
+            'value' => 200000,
+            'product_per' => 'day',
+            'maximum_used' => 90,
+        ]);
+        \App\Models\ProductDetail::factory()->create([
+            'product_id' => '2',
+            'code' => 'RIKDU',
+            'item' => 'Kunjungan dokter umum per-hari',
+            'value' => 60000,
+            'product_per' => 'day',
+            'maximum_used' => null,
+        ]);
+        \App\Models\ProductDetail::factory()->create([
+            'product_id' => '2',
+            'code' => 'RIKDS',
+            'item' => 'Kunjungan dokter spesialis per-hari',
+            'value' => 100000,
+            'product_per' => 'day',
+            'maximum_used' => null,
         ]);
     }
 }

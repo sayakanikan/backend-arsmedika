@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('customer_id');
             $table->foreignId('product_detail_id');
             $table->bigInteger('balance');
-            $table->integer('maximum_used_balance');
+            $table->integer('maximum_used_balance')->nullable();
             $table->timestamps();
         });
     }
