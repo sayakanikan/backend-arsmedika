@@ -11,11 +11,15 @@ class Product extends Model
 
     protected $guarded = ['id'];
 
-    public function product_detail(){
-        return $this->hasMany(ProductDetail::class);
+    public function product_value(){
+        return $this->hasMany(ProductValue::class);
     }
 
     public function customer(){
         return $this->hasMany(Customer::class);
+    }
+
+    public function customer_balance(){
+        return $this->hasMany(CustomerBalance::class);
     }
 }
