@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id');
-            $table->bigInteger('total_covered');
-            $table->bigInteger('total_customer_pay');
+            $table->bigInteger('total_covered')->nullable();
+            $table->bigInteger('total_customer_pay')->nullable();
             $table->timestamps();
         });
     }

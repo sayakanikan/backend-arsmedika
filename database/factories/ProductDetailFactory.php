@@ -17,10 +17,8 @@ class ProductDetailFactory extends Factory
     public function definition()
     {
         return [
-            'product_id' => '1',
             'code' => 'RIKAM',
             'item' => 'Biaya kamar per-hari, maksimal 90 hari',
-            'value' => 100000,
             'product_per' => 'day',
             'maximum_used' => 90,
         ];

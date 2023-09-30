@@ -15,10 +15,8 @@ return new class extends Migration
     {
         Schema::create('product_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id');
             $table->string('code');
             $table->text('item');
-            $table->bigInteger('value');
             $table->enum('product_per', ['used', 'day', 'year']);
             $table->integer('maximum_used')->nullable();
             $table->timestamps();
