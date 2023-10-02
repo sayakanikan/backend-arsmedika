@@ -18,9 +18,7 @@ class TransactionController extends Controller
     public function index(Request $request){
         $customer_no = $request->customer_no;
         $product_payment = $request->product_payment;
-        // $product_payment = $product_payment->transaction;
         $customer = Customer::where('customer_no', $customer_no)->first();
-        // return $product_payment;
 
         // Validation
         if ($customer == null) {
@@ -52,6 +50,14 @@ class TransactionController extends Controller
             }])
             ->where('code', $item['product_code'])->first();
 
+            if ($item['duration'] == null || $item['duration'] == 'null') {
+                $duration = 1;
+            } else {
+                $duration = $item['duration'];
+            }
+
+            $total_payment = $item['payment'] * $duration;
+
             // Check the duration of the product
             if ($product_detail->maximum_used != null) {
                 if ($item['duration'] > $product_detail->maximum_used) {
@@ -63,10 +69,10 @@ class TransactionController extends Controller
                 $duration = $item['duration'];
             }
 
-            if ($duration == null) {
+            if ($duration == null || $duration == 'null') {
                 $duration = 1;
             }
-            $total_payment = $item['payment'] * $duration;
+
             // Calculate claimed payment, and customer payment
             $claimed_payment = $product_detail->product_value[0]->value * $duration;
             
@@ -85,17 +91,18 @@ class TransactionController extends Controller
 
             // Jika product ada maximum_used
             if ($product_detail->maximum_used != null || $customer_balance->maximum_used_balance == -1) {
-                // cek apakah balance sebelumnya sudah berbeda tahun, jika iya, update maximum_used_balance
-                if ($customer_balance->created_at->format('Y') < now()->format('Y')) {
+                // cek apakah balance sebelumnya sudah berbeda bulan, dan tahun, jika iya, update maximum_used_balance
+                if ($customer_balance->created_at->addYear()->format('d m Y') == now()->format('d m Y')) {
                     $customer_balance->update([
                         'balance' => $product_detail->product_value[0]->value,
                         'maximum_used_balance' => $product_detail->maximum_used,
+                        'created_at' => now(),
                     ]);
                 }
 
                 // Jika maximum_used sudah habis
-                if ($customer_balance->maximum_used_balance - $duration < 0) {
-                    $claimed_payment = $customer_balance->balance;
+                if ($customer_balance->maximum_used_balance < 0) {
+                    $claimed_payment = 0;
                     $customer_payment = $total_payment - $claimed_payment;
                     $balance = 0;
                     $maximum_used_balance = -1;
@@ -103,14 +110,16 @@ class TransactionController extends Controller
                 // Jika maximum_used belum habis 
                 else {
                     // Jika durasi penggunaan lebih dari maximum_used
-                    if ($customer_balance->maximum_used_balance - $item['duration'] < 0) {
+                    if ($customer_balance->maximum_used_balance - $item['duration'] <= 0) {
+                        $claimed_payment = $customer_balance->balance * $customer_balance->maximum_used_balance;
+                        $customer_payment = $total_payment - $claimed_payment;
                         $balance = 0;
                         $maximum_used_balance = -1;
                     }
                     // Jika durasi penggunaan kurang dari maximum_used
                     else {
                         $balance = $customer_balance->balance;
-                        $maximum_used_balance = $product_detail->maximum_used - $duration;
+                        $maximum_used_balance = $customer_balance->maximum_used_balance - $duration;
                     }
                 }
             }
@@ -119,10 +128,11 @@ class TransactionController extends Controller
                 // Jika productnya digunakan per-tahun
                 if ($product_detail->product_per == 'year') {
                     // cek apakah balance sebelumnya berbeda tahun, jika ya update balance sesuai dengan product valuenya
-                    if ($customer_balance->created_at->format('Y') < now()->format('Y')) {
+                    if ($customer_balance->created_at->addYear()->format('d m Y') == now()->format('d m Y')) {
                         $customer_balance->update([
                             'balance' => $product_detail->product_value[0]->value,
                             'maximum_used_balance' => $product_detail->maximum_used,
+                            'created_at' => now(),
                         ]);
                     }
 
@@ -160,7 +170,7 @@ class TransactionController extends Controller
                 'transaction_id' => $transaction->id,
                 'product_detail_id' => $product_detail->id,
                 'payment_amount' => $item['payment'],
-                'quantity' => $item['duration'],
+                'quantity' => $duration,
                 'total_payment' => $total_payment,
                 'covered' => $claimed_payment,
                 'customer_pay' => $customer_payment,

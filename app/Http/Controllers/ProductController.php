@@ -66,9 +66,9 @@ class ProductController extends Controller
         $product = $request->value;
         // return json_decode($request->value);
         foreach ($product as $item) {
-            $product_value = ProductValue::where('product_id', $item['product_id'])->where('product_detail_id', $product_detail->id)->first();
+            $product_value = ProductValue::with(['product', 'product_detail'])->where('product_id', $item['product_id'])->where('product_detail_id', $product_detail->id)->first();
             if ($product_value != null) {
-                return response_json(409, 'failed', 'Product already exists');
+                return response_json(409, 'failed', 'Product ' . $product_value->product_detail->item . ' in ' . $product_value->product->product_name . ' already exists');
             }
             // Add product
             $product_value = ProductValue::create([
@@ -102,7 +102,7 @@ class ProductController extends Controller
     public function delete(Request $request) {
         $id = $request->id;
 
-        // Delete customer account
+        // Delete product detail
         $product_detail = ProductDetail::where('id', $id)->first();
 
         if ($product_detail != null) {
@@ -114,14 +114,14 @@ class ProductController extends Controller
             // Delete customer balance
             CustomerBalance::where('product_detail_id', $id)->delete();
             
-            return response_json(200, 'success', 'Customer deleted successfully');
+            return response_json(200, 'success', 'Product deleted successfully');
         }
         
-        return response_json(404, 'failed', 'Customer not found');
+        return response_json(404, 'failed', 'Product not found');
     }
 
     public function product_code(){
-        $code = ProductDetail::pluck('code')->unique()->values();
+        $code = ProductDetail::select('id', 'code', 'item')->get();
 
         return response_json(200, 'success', $code);
     }
