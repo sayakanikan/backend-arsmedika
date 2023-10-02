@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('product_detail_id');
             $table->bigInteger('payment_amount');
             $table->bigInteger('quantity')->nullable();
+            $table->bigInteger('total_payment');
             $table->bigInteger('covered');
             $table->bigInteger('customer_pay');
             $table->timestamps();
