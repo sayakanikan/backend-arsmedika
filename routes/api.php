@@ -49,4 +49,7 @@ Route::middleware(['jwt.verify'])->group(function () {
   Route::get('/history_transaction', [TransactionController::class, 'history']);
   Route::get('/history_transaction_detail', [TransactionController::class, 'history_detail']);
   Route::get('/download_struk', [TransactionController::class, 'download_struk']);
+  // Route::get('/transaction/export', [TransactionController::class, 'export_transaction']);
 });
+
+Route::get('/transaction/export', [TransactionController::class, 'export_transaction']);
