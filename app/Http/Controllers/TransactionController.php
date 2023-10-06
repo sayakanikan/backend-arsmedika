@@ -11,6 +11,8 @@ use App\Models\Transaction;
 use App\Models\TransactionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Exports\TransactionExport;
+use Maatwebsite\Excel\Facades\Excel;
 use stdClass;
 
 class TransactionController extends Controller
@@ -272,5 +274,10 @@ class TransactionController extends Controller
        $dompdf->render();
 
        return $dompdf->stream('transaksi' . $result->customer->name . '.pdf');
+    }
+
+    public function export_transaction()
+    {
+        return Excel::download(new TransactionExport(), now() . '_transaction_export.xlsx');
     }
 }
