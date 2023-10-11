@@ -22,7 +22,7 @@
         @foreach($transaction->transaction_detail as $b => $detail)
         <tr>
             @if(count($transaction->transaction_detail) > 1 && $b == 0)
-            <td rowspan="{{ count($transaction->transaction_detail) }}">{{ $loop->iteration }}</td>
+            <td rowspan="{{ count($transaction->transaction_detail) }}">{{ $a + 1 }}</td>
             <td rowspan="{{ count($transaction->transaction_detail) }}">{{ $transaction->created_at }}</td>
             <td rowspan="{{ count($transaction->transaction_detail) }}">{{ $transaction->customer->customer_no }}</td>
             <td rowspan="{{ count($transaction->transaction_detail) }}">{{ $transaction->customer->name }}</td>
@@ -42,7 +42,7 @@
             <td>{{ $detail->product_detail->code }}</td>
             <td>{{ $detail->product_detail->item }}</td>
             <td>{{ $detail->payment_amount }}</td>
-            <td>{{ $detail->quantity }}</td>
+            <td>{{ $detail->quantity != null ? $detail->quantity : 1 }}</td>
             <td>{{ $detail->total_payment }}</td>
             <td>{{ $detail->covered }}</td>
             <td>{{ $detail->customer_pay }}</td>
